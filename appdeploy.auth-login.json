@@ -1,0 +1,14 @@
+{
+  "methods": ["google", "apple", "email"],
+  "headline": "Entre no QuitaFácil",
+  "subtitle": "Seu plano financeiro fica protegido e separado por conta.",
+  "style": {
+    "mode": "light",
+    "accentColor": "#5A4EE5",
+    "backgroundColor": "#F8F7FE",
+    "panelColor": "#FFFFFF",
+    "textColor": "#17152F",
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "borderRadius": 16
+  }
+}
