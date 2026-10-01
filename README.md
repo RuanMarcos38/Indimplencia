@@ -1,73 +1,91 @@
-# Plano Aberto — Organizador de Dívidas CPF e CNPJ
+# QuitaFácil — SaaS de Recuperação Financeira
 
-MVP gratuito e local-first para organizar renda, custos, dívidas e gerar um plano objetivo de quitação.
+Aplicação full-stack para famílias, profissionais e empreendedores organizarem dívidas de CPF e CNPJ, consolidarem fluxo de caixa e definirem um prazo objetivo para sair do vermelho.
 
-## O que já funciona
+## Aplicação publicada
 
-- Dashboard com renda, custos, total de dívidas e capacidade mensal de pagamento.
-- Separação de receitas e despesas pessoais (CPF) e empresariais (CNPJ).
-- Cadastro de dívidas com origem, credor, saldo, juros mensais, parcela mínima, atraso, oferta de quitação e observações.
-- Importação de dívidas por CSV.
-- Estratégias de quitação: equilibrada, maior juros primeiro (avalanche), menor saldo primeiro (bola de neve) e atrasadas/fiscais primeiro.
-- Simulação mês a mês com juros, pagamentos, saldo final e mês de quitação.
-- Detecção de plano inviável quando o orçamento não cobre os juros.
-- Cálculo de economia potencial com ofertas de acordo.
-- Checklist de consultas oficiais.
-- Backup e restauração em JSON.
-- Exportação do cronograma em CSV.
-- Dados armazenados somente no navegador via localStorage.
+https://quitafacil-u0thco.v2.appdeploy.ai/
 
-## Fontes oficiais / consultas
+## Fluxo principal
 
-A aplicação não solicita nem armazena senha do gov.br, Serasa ou SPC.
+1. Entrar na conta.
+2. Informar CPF ou CNPJ.
+3. Definir o prazo desejado para quitar as dívidas.
+4. Cadastrar renda mensal e custos pessoais/empresariais.
+5. Consultar as fontes disponíveis e consolidar os débitos encontrados.
+6. Informar saldo, juros, parcela mínima e eventual proposta de quitação.
+7. Gerar o plano.
+8. O sistema calcula:
+   - total em dívidas;
+   - caixa livre mensal;
+   - reserva financeira;
+   - valor mensal necessário para atingir o prazo escolhido;
+   - diferença entre capacidade atual e valor necessário;
+   - ordem de prioridade;
+   - juros projetados;
+   - cronograma mês a mês;
+   - plano de ação para tornar a meta viável.
 
-- Receita Federal: https://servicos.receitafederal.gov.br/
-- REGULARIZE / PGFN: https://www.regularize.pgfn.gov.br/
-- Banco Central / Registrato: https://www.bcb.gov.br/meubc/registrato
-- Serasa: https://www.serasa.com.br/
-- SPC Brasil: https://www.spcbrasil.org.br/
+## Backend
 
-### Por que não existe "puxar tudo automaticamente" sem custo?
+A aplicação usa backend persistente e autenticação. Cada usuário possui dados financeiros isolados por conta.
 
-Receita/PGFN e Banco Central protegem informações individualizadas com autenticação do titular. Serasa oferece consulta do próprio CPF ao consumidor, mas não uma API pública gratuita para terceiros. SPC comercializa consultas. Por isso, o MVP usa os canais oficiais e permite cadastrar/importar os resultados sem depender de API paga ou de scraping de áreas autenticadas.
+Rotas principais:
 
-## Privacidade
+- `GET /api/finance`
+- `PUT /api/finance`
+- `POST /api/scan`
+- `POST /api/plan`
+- `GET /api/_healthcheck`
 
-O MVP é local-first. CPF, CNPJ, senhas e credenciais não são necessários para uso. Os dados cadastrados ficam no navegador do próprio usuário. Para mudar de computador, use **Exportar backup** e importe o JSON no outro dispositivo.
+O cálculo do plano é executado no backend e considera juros mensais, pagamentos mínimos, ofertas de quitação e priorização de débitos atrasados/fiscais.
 
-> Em uma futura versão multiusuário, dados financeiros devem ser armazenados com autenticação forte, criptografia, controle de acesso e política de privacidade/LGPD.
+## Consultas de CPF/CNPJ
 
-## Como executar
+O produto foi desenhado com o documento como ponto de entrada, mas sem inventar integrações.
 
-Não há build nem dependências.
+### Disponível gratuitamente
 
-1. Baixe ou clone o repositório.
-2. Abra `index.html` em um navegador moderno.
+**PGFN — Dívida Aberta:** consulta pública por CPF/CNPJ para inscrições em situação irregular.
 
-Para desenvolvimento local:
+### Dados protegidos
 
-```bash
-python -m http.server 8080
-```
+Receita Federal/e-CAC, REGULARIZE detalhado, Banco Central/Registrato, Serasa e outros dados individualizados exigem autenticação, consentimento do titular ou contratação oficial. O sistema apresenta os conectores e permite consolidar os resultados no plano.
 
-Depois acesse `http://localhost:8080`.
+### SPC / APIs comerciais
+
+Não é utilizada falsa API gratuita. Quando a fonte exige contratação, o sistema identifica isso de forma explícita.
+
+## Frontend
+
+React + Vite + Tailwind, com painel corporativo responsivo inspirado no layout de referência:
+
+- menu lateral;
+- cards de indicadores;
+- visão financeira;
+- diagnóstico CPF/CNPJ;
+- fluxo financeiro;
+- gestão de dívidas;
+- plano por prazo;
+- integrações;
+- configurações;
+- interface mobile.
 
 ## Estrutura
 
-- `index.html` — interface.
-- `styles.css` — layout responsivo.
-- `app.js` — armazenamento local, cálculos, simulação, importação/exportação.
+- `src/App.tsx` — interface e fluxos do SaaS.
+- `src/index.css` — identidade visual responsiva.
+- `backend/index.ts` — API, persistência, validação de documentos e motor financeiro.
+- `appdeploy.auth-login.json` — autenticação.
+- `tests/tests.json` — testes dos fluxos críticos.
 
-## Próximas evoluções recomendadas
+## Segurança
 
-1. Importação assistida de relatórios PDF/CSV emitidos pela Receita, PGFN, Registrato e Serasa.
-2. Modo multiusuário opcional com Supabase (free tier), mantendo isolamento por usuário.
-3. Alertas de vencimento e acompanhamento de acordos.
-4. Comparador de propostas de renegociação (à vista x parcelado x juros).
-5. Histórico mensal de patrimônio líquido e evolução das dívidas.
-6. Relatório PDF do plano financeiro.
-7. Integrações oficiais adicionais apenas quando houver API autorizada, segura e economicamente viável.
+- Nenhuma senha de gov.br, Serasa ou SPC é armazenada.
+- Dados persistidos são separados pelo identificador autenticado do usuário.
+- As rotas financeiras exigem autenticação.
+- Consultas protegidas só devem ser integradas por meios oficiais e autorizados.
 
-## Aviso
+## Observação
 
-A ferramenta é de organização e simulação financeira. Os resultados são estimativas baseadas nos dados informados pelo usuário. Valores oficiais, juros, condições de negociação e baixa de restrições devem ser confirmados diretamente com cada credor ou órgão responsável.
+O QuitaFácil é uma ferramenta de organização e simulação. O saldo oficial, juros, descontos, validade de propostas, certidões e baixa de restrições devem ser confirmados com o credor ou órgão responsável.
