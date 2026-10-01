@@ -1,4 +1,4 @@
-import { router, json, error, requireAuth, db } from '@appdeploy/sdk';
+import { router, json, error, requireAuth, db } from '../server/sdk.ts';
 
 type Scope = 'CPF' | 'CNPJ';
 type CashItem = {
@@ -443,9 +443,9 @@ export const handler = router({
           {
             id: 'pgfn',
             name: 'PGFN — Dívida Aberta',
-            status: 'available',
+            status: 'protected',
             detail:
-              'Consulta pública e gratuita por CPF/CNPJ para débitos em situação irregular.',
+              'Consulta manual no portal oficial. Esta aplicação ainda não consulta dívidas automaticamente.',
             url: 'https://www.dividaaberta.pgfn.gov.br/consultar-devedores',
           },
           {
@@ -474,7 +474,7 @@ export const handler = router({
             id: 'serasa',
             name: 'Serasa',
             status: 'protected',
-            detail: 'Consulta do consumidor ocorre em ambiente autenticado.',
+            detail: 'Integração automática aguardando contrato e credenciais oficiais. O link abre o portal do consumidor.',
             url: 'https://www.serasa.com.br/',
           },
           {
@@ -490,3 +490,4 @@ export const handler = router({
     },
   ],
 });
+

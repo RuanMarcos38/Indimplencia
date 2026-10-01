@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+.auth-overlay { position: fixed; inset: 0; z-index: 1000; background: #101b32aa; display: grid; place-items: center; padding: 20px; }
+.auth-dialog { background: white; width: min(100%, 450px); max-height: 90vh; overflow: auto; padding: 28px; border-radius: 20px; }
+.auth-dialog label { display: grid; gap: 5px; margin: 16px 0; }
+.auth-dialog input { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; width: 100%; }
+.auth-dialog button { background: #1e40af; color: white; border-radius: 8px; padding: 12px; margin: 8px 4px 0 0; }
+.auth-dialog [role=alert] { color: #b91c1c; }
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -1121,3 +1128,5 @@ tr:last-child td {
     display: none;
   }
 }
+
+
