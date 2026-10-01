@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Criar diagnóstico e gerar plano de quitação",
+    "sanity": true,
+    "viewport": "desktop",
+    "covers": [
+      "autenticação",
+      "consulta de documento",
+      "POST /api/scan",
+      "POST /api/plan",
+      "cálculo de prazo e capacidade"
+    ],
+    "description": "Verifica o fluxo principal de entrada no SaaS, preenchimento financeiro e geração de um plano objetivo.",
+    "steps": [
+      "Entrar com a conta de teste disponível",
+      "Abrir Diagnóstico CPF/CNPJ e informar um documento válido, prazo de 24 meses, uma renda mensal e custos mensais",
+      "Adicionar pelo menos uma dívida e executar o diagnóstico"
+    ],
+    "expected": "O painel exibe documento válido, fontes de consulta e um plano com pagamento mensal necessário e indicação de viabilidade."
+  },
+  {
+    "name": "Persistir renda, custo e dívida após recarregar",
+    "viewport": "desktop",
+    "covers": [
+      "GET /api/finance",
+      "PUT /api/finance",
+      "database persistence",
+      "cadastro de dívida",
+      "fluxo financeiro"
+    ],
+    "description": "Verifica que dados financeiros do usuário são persistidos no backend e continuam disponíveis.",
+    "steps": [
+      "Entrar e cadastrar uma entrada mensal chamada Salário no valor de 5000",
+      "Cadastrar um custo chamado Aluguel no valor de 1500 e uma dívida chamada Banco Teste no valor de 3000",
+      "Recarregar a aplicação e voltar às telas Fluxo financeiro e Minhas dívidas"
+    ],
+    "expected": "Salário, Aluguel e Banco Teste permanecem visíveis com os valores cadastrados."
+  },
+  {
+    "name": "Recalcular plano ao alterar o prazo",
+    "viewport": "desktop",
+    "covers": [
+      "seletor de prazo",
+      "simulação de quitação",
+      "viabilidade financeira"
+    ],
+    "description": "Verifica que a meta escolhida altera o pagamento mensal necessário e a indicação de capacidade.",
+    "setup": ["Entrar e cadastrar renda, custos e ao menos uma dívida"],
+    "steps": [
+      "Abrir Plano de quitação",
+      "Selecionar 12 meses e observar o valor necessário por mês",
+      "Selecionar 36 meses"
+    ],
+    "expected": "O plano é recalculado para 36 meses e o valor mensal necessário muda de forma visível."
+  },
+  {
+    "name": "Bloquear documento inválido no celular",
+    "viewport": "mobile",
+    "covers": [
+      "validação de CPF/CNPJ",
+      "guardrail de consulta",
+      "layout responsivo"
+    ],
+    "description": "Verifica que um documento inválido não é tratado como consulta bem-sucedida.",
+    "steps": [
+      "Entrar e abrir Diagnóstico CPF/CNPJ",
+      "Selecionar CPF e informar 111.111.111-11",
+      "Executar o diagnóstico"
+    ],
+    "expected": "Uma mensagem de CPF/CNPJ inválido fica visível e nenhuma fonte é apresentada como resultado encontrado."
+  }
+]
